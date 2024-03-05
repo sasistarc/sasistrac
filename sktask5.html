@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="authApp">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Authentication System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        input[type="text"],
+        input[type="password"],
+        button {
+            width: 100%;
+            margin-top: 10px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .error-message {
+            color: red;
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .success-message {
+            color: green;
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .content {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+
+<body ng-controller="AuthController as auth">
+    <div class="container">
+        <h2>User Authentication</h2>
+        <div ng-show="auth.errorMsg" class="error-message">{{ auth.errorMsg }}</div>
+        <div ng-show="auth.successMsg" class="success-message">{{ auth.successMsg }}</div>
+        <form ng-show="!auth.isLoggedIn" ng-submit="auth.login()">
+            <input type="text" ng-model="auth.loginData.username" placeholder="Username" required>
+            <input type="password" ng-model="auth.loginData.password" placeholder="Password" required>
+            <button type="submit">Login</button>
+        </form>
+        <form ng-show="!auth.isLoggedIn" ng-submit="auth.signup()">
+            <input type="text" ng-model="auth.signupData.username" placeholder="Username" required>
+            <input type="password" ng-model="auth.signupData.password" placeholder="Password" required>
+            <button type="submit">Sign Up</button>
+        </form>
+        <div class="content" ng-show="auth.isLoggedIn">
+            <h3>Welcome, {{ auth.currentUser.username }}!</h3>
+            <p>This is your personalized content.</p>
+            <button ng-click="auth.logout()">Logout</button>
+        </div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <script>
+        angular.module('authApp', [])
+            .controller('AuthController', function () {
+                var vm = this;
+
+                vm.isLoggedIn = false;
+                vm.errorMsg = '';
+                vm.successMsg = '';
+                vm.currentUser = null;
+
+                vm.loginData = {
+                    username: '',
+                    password: ''
+                };
+
+                vm.signupData = {
+                    username: '',
+                    password: ''
+                };
+
+                vm.login = function () {
+                    // Perform authentication logic here
+                    // For demonstration purposes, assuming login is successful
+                    vm.isLoggedIn = true;
+                    vm.currentUser = vm.loginData;
+                    vm.successMsg = 'Login successful.';
+                    vm.errorMsg = '';
+                };
+
+                vm.signup = function () {
+                    // Perform signup logic here
+                    // For demonstration purposes, assuming signup is successful
+                    vm.isLoggedIn = true;
+                    vm.currentUser = vm.signupData;
+                    vm.successMsg = 'Sign up successful.';
+                    vm.errorMsg = '';
+                };
+
+                vm.logout = function () {
+                    vm.isLoggedIn = false;
+                    vm.currentUser = null;
+                    vm.successMsg = '';
+                    vm.errorMsg = '';
+                };
+            });
+    </script>
+</body>
+
+</html>

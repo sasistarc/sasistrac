@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="productCatalogApp">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Colorful Product Catalog</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+
+        .catalog-container {
+            max-width: 800px;
+            margin: 20px auto;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            color: #333;
+        }
+
+        h1 {
+            text-align: center;
+            color: #009688;
+            margin-bottom: 30px;
+        }
+
+        .filters {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .filter-select {
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            background-color: #f9f9f9;
+            cursor: pointer;
+        }
+
+        .products {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-gap: 20px;
+        }
+
+        .product {
+            background-color: #f9f9f9;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+            color: #333;
+        }
+
+        .product:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .product img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+
+        .product h3 {
+            margin: 0;
+            color: #009688;
+            font-size: 1.2em;
+        }
+
+        .product p {
+            margin: 0;
+            color: #666;
+        }
+
+        .filter-select {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .filter-select:hover {
+            background-color: #45a049;
+        }
+
+        .restart-btn {
+            background-color: #f44336;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            text-decoration: none;
+        }
+
+        .restart-btn:hover {
+            background-color: #d32f2f;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="catalog-container" ng-controller="CatalogController as catalog">
+        <h1>Colorful Product Catalog</h1>
+        <div class="filters">
+            <div>
+                <label for="category-filter">Category:</label>
+                <select id="category-filter" class="filter-select" ng-model="catalog.selectedCategory" ng-change="catalog.filterProducts()">
+                    <option value="">All</option>
+                    <option ng-repeat="category in catalog.categories" value="{{ category }}">{{ category }}</option>
+                </select>
+            </div>
+            <div>
+                <label for="feature-filter">Feature:</label>
+                <select id="feature-filter" class="filter-select" ng-model="catalog.selectedFeature" ng-change="catalog.filterProducts()">
+                    <option value="">All</option>
+                    <option ng-repeat="feature in catalog.features" value="{{ feature }}">{{ feature }}</option>
+                </select>
+            </div>
+        </div>
+        <div class="products">
+            <div class="product" ng-repeat="product in catalog.filteredProducts">
+                <img ng-src="{{ product.image }}" alt="{{ product.name }}">
+                <h3>{{ product.name }}</h3>
+                <p>Category: {{ product.category }}</p>
+                <p>Price: ${{ product.price }}</p>
+                <p>Feature: {{ product.feature }}</p>
+            </div>
+        </div>
+        <button class="restart-btn" ng-show="catalog.showScore" ng-click="catalog.restartQuiz()">Restart Quiz</button>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <script>
+        angular.module('productCatalogApp', [])
+            .controller('CatalogController', function () {
+                var vm = this;
+
+                vm.products = [
+                    { name: 'Product 1', category: 'crystal watch', price: 10, feature: 'Feature 1', image: 'https://images.samsung.com/in/galaxy-watch6/feature/galaxy-watch6-banner-watch6-classic-mo.jpg' },
+                    { name: 'Product 2', category: 'sunglasses', price: 20, feature: 'Feature 2', image: 'https://goglassic.com/cdn/shop/products/IMG_1463.jpg?v=1673501367&width=1946' },
+                    { name: 'Product 3', category: 'wallet', price: 15, feature: 'Feature 1', image: 'https://m.media-amazon.com/images/I/91+yVDGMY3L._AC_UY1100_.jpg' },
+                    { name: 'Product 4', category: 'nike shoes', price: 25, feature: 'Feature 3', image: 'https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/fdded470-0ac5-4bd7-b41b-1bb63e161438/custom-nike-air-force-1-mid-by-you-shoes.png' },
+                    { name: 'Product 5', category: 't-shirt', price: 30, feature: 'Feature 2', image: 'https://m.media-amazon.com/images/I/81FjoDja7YL._AC_UY1100_.jpg' },
+                    { name: 'Product 6', category: 'cap', price: 18, feature: 'Feature 1', image: 'https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/53cd747d-7ba0-425c-9a17-15d452843fb5/sportswear-classic-99-cap-S41lbn.png' },
+                ];
+
+                vm.categories = ['Category A', 'Category B', 'Category C'];
+                vm.features = ['Feature 1', 'Feature 2', 'Feature 3'];
+
+                vm.selectedCategory = '';
+                vm.selectedFeature = '';
+
+                vm.filteredProducts = vm.products;
+
+                vm.filterProducts = function () {
+                    vm.filteredProducts = vm.products.filter(function (product) {
+                        var categoryMatch = !vm.selectedCategory || product.category === vm.selectedCategory;
+                        var featureMatch = !vm.selectedFeature || product.feature === vm.selectedFeature;
+                        return categoryMatch && featureMatch;
+                    });
+                };
+            });
+    </script>
+</body>
+
+</html>

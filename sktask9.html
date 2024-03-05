@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="chatApp">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Colorful Real-time Chat Application</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .chat-container {
+            background-color: #fff;
+            border-radius: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 400px;
+            max-width: 90%;
+            height: 500px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .chat-header {
+            background-color: #4CAF50;
+            color: #fff;
+            padding: 15px;
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-header h2 {
+            margin: 0;
+            font-size: 1.5em;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+        }
+
+        .message {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .message .sender {
+            font-weight: bold;
+            color: #4CAF50;
+            margin-right: 10px;
+        }
+
+        .message .timestamp {
+            font-size: 0.8em;
+            color: #888;
+            margin-left: auto;
+        }
+
+        .message .content {
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 10px;
+            max-width: 70%;
+            word-wrap: break-word;
+        }
+
+        .message.sent .content {
+            background-color: #4CAF50;
+            color: #fff;
+        }
+
+        .message.received .content {
+            background-color: #E91E63;
+            color: #fff;
+        }
+
+        .chat-input {
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid #ccc;
+        }
+
+        .chat-input input[type="text"] {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 10px;
+            margin-right: 10px;
+            font-size: 16px;
+            background-color: #f0f0f0;
+        }
+
+        .chat-input button {
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-size: 16px;
+        }
+
+        .chat-input button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="chat-container" ng-controller="ChatController as chat">
+        <div class="chat-header">
+            <h2>Colorful Real-time Chat Application</h2>
+            <span>{{ chat.currentUser }}</span>
+        </div>
+        <div class="chat-messages">
+            <div class="message" ng-repeat="message in chat.messages">
+                <span class="sender">{{ message.sender }}:</span>
+                <span class="timestamp">{{ message.timestamp | date:'short' }}</span>
+                <div class="content" ng-class="{ 'sent': message.sender === chat.currentUser, 'received': message.sender !== chat.currentUser }">
+                    {{ message.content }}
+                </div>
+            </div>
+        </div>
+        <div class="chat-input">
+            <input type="text" placeholder="Type your message..." ng-model="chat.newMessage" ng-keyup="$event.keyCode === 13 && chat.sendMessage()">
+            <button ng-click="chat.sendMessage()">Send</button>
+        </div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <script>
+        angular.module('chatApp', [])
+            .controller('ChatController', function ($scope, $timeout) {
+                var vm = this;
+                vm.currentUser = 'You';
+                vm.messages = [];
+                vm.newMessage = '';
+
+                // Simulated received messages (for demo purposes)
+                var receivedMessages = [
+                    { sender: 'sasi', content: 'Hello there!', timestamp: new Date() },
+                    { sender: 'bala', content: 'Hi! How are you?', timestamp: new Date() },
+                    { sender: 'arul', content: 'I\'m doing great, thanks!', timestamp: new Date() }
+                ];
+
+                // Simulate receiving a message
+                function receiveMessage(message) {
+                    vm.messages.push(message);
+                }
+
+                // Simulate receiving messages at intervals
+                function simulateIncomingMessages() {
+                    receivedMessages.forEach(function (message) {
+                        $timeout(function () {
+                            receiveMessage(message);
+                        }, Math.random() * 3000);
+                    });
+                }
+
+                simulateIncomingMessages();
+
+                // Send a message
+                vm.sendMessage = function () {
+                    if (vm.newMessage.trim() !== '') {
+                        var message = {
+                            sender: vm.currentUser,
+                            content: vm.newMessage,
+                            timestamp: new Date()
+                        };
+                        vm.messages.push(message);
+                        vm.newMessage = '';
+                    }
+                };
+            });
+    </script>
+</body>
+
+</html>
